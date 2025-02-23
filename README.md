@@ -45,7 +45,7 @@ In order to run the simulations, the user needs to follow these steps:
 
 2 - Run the simulations by typing: `./simmht.ex`. This procedure will generate two new files and at the same time will print on the terminal the time and the temperature at the center of the each realization. A given realization ends when the tumor reachs a steady state condition. When this occurs the program goes to the next realization. A large database with hundreds of realizations can take weeks of CPU time. The generated files are:
 
-- *generated_inputs.dat*: this is a large table with $N_{rea}$ lines, where $N_{rea}$ denotes the number of realizations selected by the user in the *entrada.dat* file. In each line the file the program prints the random values of $\phi$, $H_0$, $\omega$ and $a$ that will be simulated;
+- *generated_inputs.dat*: this is a large table with $N_{rea}$ lines, where $N_{rea}$ denotes the number of realizations selected by the user in the *config.dat* file. In each line the file the program prints the random values of $\phi$, $H_0$, $\omega$ and $a$ that will be simulated;
     
 - *outputs.dat*: after the convergence of each realization, the same input variables are printed here with two new information: the steady state temperature at the center of the tumor and the time the system takes to reach this condition;
 

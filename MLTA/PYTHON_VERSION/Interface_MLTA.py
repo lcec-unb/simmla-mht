@@ -8,6 +8,7 @@ import numpy as np
 import json
 import os
 import re
+import time
 
 class Main_wind_pos:
     ## Abre a tela inicial e estabelece algumas informações a serem usadas no meio do código
@@ -107,17 +108,17 @@ class Main_wind_pos:
         self.resultContainer = cttk.CTkFrame(self.root_1)
         self.resultContainer.pack(pady=10, padx=20)
         
-        self.temp_label = cttk.CTkLabel(self.resultContainer, text="Predicted steady state temperature: ")
+        self.temp_label = cttk.CTkLabel(self.resultContainer, text="Temperatura Prevista: ")
         self.temp_label.pack()
 
-        self.time_label = cttk.CTkLabel(self.resultContainer, text="Predicted development time: ")
+        self.time_label = cttk.CTkLabel(self.resultContainer, text="Tempo Previsto: ")
         self.time_label.pack()
         
         #botão de gerar jason
         self.autenticar = cttk.CTkButton(self.mainconteiner_root1, text="Ok",
                            width=150,  # Ajustado para largura em pixels
                            height=40,command=self.gera_jason)
-        self.autenticar.pack(side=BOTTOM,padx=5,fill="none", expand=False)
+        self.autenticar.pack(side=BOTTOM,pady=5,padx=5,fill="none", expand=False)
         
     def gera_jason(self):
         os.system("rm AIFINAL.py")
@@ -147,7 +148,7 @@ class Main_wind_pos:
         # Título do container
         self.confirmationmesh.title("Confirmation")
         self.confirmationmeshLabel = cttk.CTkLabel(self.confContainermesh, 
-                              text="Running ANN algorithm. This could take a minute or two. Please wait!")
+                              text="Got it! Please wait a minute or two for ANN's calculations.")
         self.confirmationmeshLabel.pack(side="left")
         
         ## Botão de confirmação
@@ -205,16 +206,16 @@ class Main_wind_pos:
     
         # Quando o arquivo JSON for encontrado, leia os dados
         with open(json_file_path, "r") as f:
-                data = json.load(f)
+                data1 = json.load(f)
     
         # Extrai os dados do arquivo JSON
-        predicted_temp = data["predicted_temp"]
-        predicted_time = data["predicted_time"]
+        predicted_temp = data1["predicted_temp"]
+        predicted_time = data1["predicted_time"]
 
 
         # Atualiza os Labels com os resultados
-        self.temp_label.configure(text=f"Temperatura Prevista: {predicted_temp:.2f} °C")
-        self.time_label.configure(text=f"Tempo Previsto: {predicted_time:.2f} s")
+        self.temp_label.configure(text=f"Predicted temperature: {predicted_temp:.2f} °C")
+        self.time_label.configure(text=f"Predicted time: {predicted_time:.2f} s")
     
 
     

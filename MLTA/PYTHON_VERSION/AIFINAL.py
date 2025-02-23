@@ -1,3 +1,5 @@
+#Code by Filipe Ossege
+
 #Imported packages
 import numpy as np
 import matplotlib.pyplot as plt
@@ -82,11 +84,14 @@ plt.xlabel("True Temperature (°C)")
 plt.ylabel("Predicted Temperature (°C)")
 plt.savefig('TIME.png', format='png', dpi=1200, bbox_inches='tight')
 
+R1 = np.concatenate((XTest, YTest1.reshape(-1, 1), testPredictions1.reshape(-1, 1)), axis=1)
+R2 = np.concatenate((XTest, YTest2.reshape(-1, 1), testPredictions2.reshape(-1, 1)), axis=1)
+
 ###############################################################################
 '''Predict temperature and time for custom input'''
-phi = 3.34 # % 
-H_0 = 2100 #[A/m] 
-f = 210000 # [Hz]
+phi = 3.3 # % 
+H_0 = 3000 #[A/m] 
+f = 184000 # [Hz]
 a = 5.0e-09 #[m]
 # Input given by the user
 user_input = np.array([[phi, H_0, f, a]])
