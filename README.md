@@ -51,7 +51,13 @@ In order to run the simulations, the user needs to follow these steps:
 
 ## MLTA - Matlab version
 
-This code simply reads the database in a txt file named DS.txt, learn the patterns with these data and apply the regressor algorithms to predict values that are not in the trainning data. It also check for the performance of the regressor schemes. The hyperparameters used in the machine learning algorithms are estimated through another code that uses Bayesian optimization.
+This code reads the database in a txt file named DS.txt, learn the patterns with these data and apply the regressor algorithms to predict values that are not in the trainning data. It also check for the performance of the regressor schemes. The hyperparameters used in the machine learning algorithms are estimated using Bayesian optimization. This code is composed by the following files:
+
+- *AIFINAL.m* - generates all figures, final data and analysis related to the performance of the regressor schemes used in this problem;
+- *AIMO.m* - tests all the algorithms in order to find the best hyperparameters through Bayesian optimization;
+- *R2A.m* - matlab function used to estimate the R2 metrics;
+- *DS.txt* - database used to train the regressor algorithms for this specific problem;
+
 
 ## MLTA - Python version
 
@@ -83,6 +89,7 @@ To install the scikit-learn (sklearn) package in the Spyder software, use the fo
 
 The package can now be used.
 
+In order to use the GUI just open the file `Interface_MLTA.py` with your latest python version. 
 
 
 ## References
