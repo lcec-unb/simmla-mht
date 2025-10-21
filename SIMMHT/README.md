@@ -9,12 +9,9 @@
 ## ✏️ Governing Equation
 
 The solver advances the Pennes bioheat equation in 2D:
+
 $$
-\rho c \frac{\partial T}{\partial t}
-= \nabla \cdot (k \nabla T)
-+ \omega \rho_b c_b (T_b - T)
-+ Q_{\text{ext}}
-+ Q_{\text{mag}}(t,T)
+\rho c \frac{\partial T}{\partial t} = \nabla \cdot (k \nabla T) + \omega \rho_b c_b (T_b - T) + Q_{\text{ext}} + Q_{\text{mag}}(t,T)
 $$
 
 - **Perfusion** follows a temperature-dependent law (distinct for tumor and healthy tissue).
