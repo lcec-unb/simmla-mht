@@ -14,10 +14,22 @@ program simmht
   allocate(HZERO(Nrea), raio_part(Nrea), omega(Nrea), PHI(Nrea))
   allocate(timesteady(Nrea), Tcenter(Nrea))
   allocate(contagem(Nrea))
+ 
+xc = (xmax-xmin)/2.0 
+yc = (ymax-ymin)/2.0
 
-  xc = 0.5*(xmax-xmin)
-  yc = 0.5*(ymax-ymin)
+! Definindo elipse
 
+by = raio*((1-eccent**2)**0.25)
+ax = (raio**2)/by
+
+b_ymax = yc + by
+b_ymin = yc - by
+a_xmax = xc + ax
+a_xmin = xc - ax
+
+raiomaximo = ((ymax-yc)**2.0 + (xmax-xc)**2.0)**0.5
+  
   pi    = acos(-1.0)
   muzero= 4.0*pi*1.0E-07
   HZERO = 0.0; omega = 0.0; PHI = 0.0; raio_part = 0.0
@@ -70,7 +82,6 @@ write(*,*)'#################################################'
 
   write(*,*) ''
   write(*,*) 'TOTAL SIMULATION TIME:', tpro, 'seconds'
-  write(*,*) 'FINAL TEMPERATURE AT THE CENTER OF THE TUMOUR:', T((m*n-m)/2)
 
   deallocate(ID,T,T_ANTES,T_AGORA,W,x,y)
   deallocate(HZERO,raio_part,omega,PHI,timesteady,Tcenter,contagem)

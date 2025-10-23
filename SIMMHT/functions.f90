@@ -115,29 +115,48 @@ end subroutine mesh
 ! índice linear: idx = j + (k-1)*n
 !-------------------------------------------------------------
 subroutine id_vector
-  integer :: j,k,idx
-  ! zera
+  implicit none
+  integer :: j, k, idx
+  real :: coef, radx2, arg, denom
+
+  ! zera ID
   do k=1,m
     do j=1,n
-      idx = j + (k-1)*n
+      idx     = j + (k-1)*n
       ID(idx) = 0.0
     end do
   end do
 
-  do j=1,n
-    do k=1,m
-      if (x(j) .ge. (xc - raio) .and. x(j) .le. (xc + raio)) then
-        if (y(k) .le. yc) then
-          rmin = yc - sqrt( max(0.0, raio**2 - (x(j)-xc)**2 ) )
-          if (y(k) .gt. rmin) ID(j + (k-1)*n) = 1.0
-        else
-          rmin = yc + sqrt( max(0.0, raio**2 - (x(j)-xc)**2 ) )
-          if (y(k) .lt. rmin) ID(j + (k-1)*n) = 1.0
+  ! coeficiente geométrico (evita divisão por zero)
+  denom = a_xmax - xc
+  if (abs(denom) < 1.0e-12) denom = sign(1.0e-12, denom)
+  coef  = (b_ymax - yc) / denom
+
+  ! (a_xmax - xc)^2, usado no argumento da raiz
+  radx2 = (a_xmax - xc)**2
+
+  do k=1,m
+    do j=1,n
+      idx = j + (k-1)*n
+
+      if (x(j) .ge. a_xmin .and. x(j) .le. a_xmax) then
+        ! argumento da raiz: garante não-negatividade
+        arg = radx2 - (x(j) - xc)**2
+        if (arg < 0.0) arg = 0.0
+
+        ! Quadrantes superiores: yc <= y <= b_ymax
+        if (y(k) .ge. yc .and. y(k) .le. b_ymax) then
+          if ( (y(k) - yc) .le. coef * sqrt(arg) ) ID(idx) = 1.0
+        ! Quadrantes inferiores: b_ymin <= y <= yc
+        else if (y(k) .le. yc .and. y(k) .ge. b_ymin) then
+          if ( (yc - y(k)) .le. coef * sqrt(arg) ) ID(idx) = 1.0
         end if
       end if
+
     end do
   end do
 end subroutine id_vector
+
 
 !-------------------------------------------------------------
 ! PERFUSÃO SANGUÍNEA W(T) (corrigido)
@@ -276,10 +295,28 @@ subroutine gauss_seidel_dense(A, x, b, n, maxit, tol, omegaSOR)
   end do
 end subroutine gauss_seidel_dense
 
+
+subroutine tecplot(a)
+integer a
+character(3) int_char
+write(int_char, '(I3)') a
+open(a, file="fields"//int_char//".plt")
+write(a,*) 'Variables="x","y","ID","W","T"'
+write(a,*) 'ZONE F=POINT,I='
+write(a,*) n
+write(a,*) ',J='
+write(a,*) m
+do i=1,n
+do j=1,m
+write(a,'(F12.4,F12.4,F12.4,F12.4)') x(i),y(j),ID(i+((j-1)*n)),W(i+((j-1)*n)),T(i+((j-1)*n))
+end do
+end do
+end subroutine tecplot
 !-------------------------------------------------------------
 ! ROTINA MAIN (varreduras)
 !-------------------------------------------------------------
 subroutine main
+  use variables, only: tecplot_output
   integer :: AUXINTloc, auxiliarinteiro, uout, ios
   real :: AUXREALloc, auxiliarreal
   real :: tmin_t, tmax_t, tavg_t, tstd_t
@@ -325,12 +362,6 @@ call flush(uout)
       lreal = l
 write(*,'(A,F12.4," s   ",F12.2," °C")',advance='no') achar(27)//'[2K'//achar(13), l*dt, T((m*n-m)/2)
 
-!      if (T((m*n-m)/2) .gt. 55.0) then
-!        contagem(p)=contagem(p)+1
-!        T = TZERO
-!        exit   ! sai do laço temporal desta simulação
-!      end if
-
       if (maxval(abs(T_ANTES - T_AGORA)) .lt. 1.0E-06) then
         if (contagem(p) .lt. 1) then
           timesteady(p) = l*dt
@@ -343,18 +374,16 @@ write(*,'(A,F12.4," s   ",F12.2," °C")',advance='no') achar(27)//'[2K'//achar(1
 write(uout,'(I5,F8.3,F9.1,F12.1,E10.2E2,F8.2,F8.2,F8.2,F8.2,F8.2,F8.2,E10.2E2)') p, PHI(p), HZERO(p), omega(p), raio_part(p), &
                      T(ic), timesteady(p), &
                      tmin_t, tavg_t, tstd_t, &
-                     sar_mean, r_afet                     
-            call flush(uout)
+                     sar_mean, r_afet     
+          call flush(uout)
+          if(tecplot_output) then
+          call tecplot(p)
+          end if
           T = TZERO
           exit
         end if
       end if
 
-!      auxiliarinteiro = int( l / (t_tempi/dt) )
-!      auxiliarreal    =       l / (t_tempr/dt)
-!      if (auxiliarinteiro == int(auxiliarreal)) then
-!        call imag
-!      end if
     end do
     write(*,*)
     write(*,'(A,1x)') 'FIM DA SIMULAÇÃO', p

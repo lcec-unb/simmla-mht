@@ -26,11 +26,13 @@ subroutine input
     READ (2,507) texto,n   ! NODES QUANTITY IN X DIRECTION
     READ (2,507) texto,m   ! NODES QUANTITY IN Y DIRECTION
     READ (2,508) texto,fileinput
+    READ (2,508) texto,tecplot_output
     READ (2,507) texto,Nrea
     READ (2,'(A)') texto
     READ (2,'(A)') texto
     READ (2,'(A)') texto
     READ (2,505) texto,raio
+    READ (2,505) texto,eccent
     READ (2,505) texto,RHO1
     READ (2,505) texto,RHO2
     READ (2,505) texto,K1

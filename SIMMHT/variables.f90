@@ -18,7 +18,7 @@ real, allocatable :: W(:)        ! perfusão
 ! Malha e geometria
 real, allocatable :: x(:), y(:)
 real :: xmin, xmax, ymin, ymax
-real :: deltax, deltay
+real :: deltax, deltay, eccent
 real :: raio, xc, yc, rmin, rmax, eps, ax, by
 
 ! Tempo / controle
@@ -40,7 +40,7 @@ real :: muzero, MD, cor, visc
 real :: pi, ximag, pimag, omegaestrela, alphazero, aux
 
 ! Flags
-logical :: decaicampo, ELIPTICO, CIRCULAR, fileinput
+logical :: decaicampo, tecplot_output, fileinput
 logical :: geracaodireta, STEADY, CALCCAMPO, EXPLICIT
 
 ! Aux
