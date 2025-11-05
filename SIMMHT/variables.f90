@@ -18,8 +18,8 @@ real, allocatable :: W(:)        ! perfusão
 ! Malha e geometria
 real, allocatable :: x(:), y(:)
 real :: xmin, xmax, ymin, ymax
-real :: deltax, deltay, eccent
-real :: raio, xc, yc, rmin, rmax, eps, ax, by
+real :: deltax, deltay
+real :: xc, yc, rmin, rmax, eps, ax, by
 
 ! Tempo / controle
 real :: dt, sim_time, npastreal, lreal
@@ -29,14 +29,14 @@ real :: t_dec, t_tempr, tf, ti, tpro
 character(3) :: rea_char
 
 ! Parâmetros (varreduras)
-real, allocatable :: HZERO(:), raio_part(:), omega(:), PHI(:)
-real, allocatable :: timesteady(:), Tcenter(:)
+real, allocatable :: HZERO(:), raio_part(:), omega(:), PHI(:), raio(:), eccent(:)
+real, allocatable :: timesteady(:), Tcenter(:), a_xmin(:), a_xmax(:), b_ymin(:), b_ymax(:)
 integer, allocatable :: contagem(:)
 
 ! Propriedades termofísicas e constantes
 real :: RHO1, RHO2, RHOB, C1, C2, CB, Q1, Q2, TB
 real :: K1, K2, TZERO, T_ini
-real :: muzero, MD, cor, visc
+real :: muzero, MD, cor, visc, iter
 real :: pi, ximag, pimag, omegaestrela, alphazero, aux
 
 ! Flags
@@ -44,7 +44,7 @@ logical :: decaicampo, tecplot_output, fileinput
 logical :: geracaodireta, STEADY, CALCCAMPO, EXPLICIT
 
 ! Aux
-real :: ylinha, xlinha, raiomaximo, a_xmin, a_xmax, b_ymin, b_ymax
+real :: ylinha, xlinha, raiomaximo
 integer :: TIU, AUXINT, auxiliarinteiro
 real :: AUXREAL, auxiliarreal
 

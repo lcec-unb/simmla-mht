@@ -91,7 +91,7 @@ subroutine compute_metrics(Tmin_tumor, Tavg_tumor, Tstd_tumor, SAR_mean, R_afet)
 subroutine inputs
   open(15,file='inputs.dat')
   do i=1,Nrea
-    read(15,*) PHI(i), HZERO(i), omega(i), raio_part(i)
+    read(15,*) iter, PHI(i), HZERO(i), omega(i), raio_part(i), raio(i), eccent(i)
   end do
   close(15)
 end subroutine inputs
@@ -114,11 +114,12 @@ end subroutine mesh
 ! ID_VECTOR (0 saudável / 1 tumor)
 ! índice linear: idx = j + (k-1)*n
 !-------------------------------------------------------------
-subroutine id_vector
+subroutine id_vector(p)
   implicit none
   integer :: j, k, idx
   real :: coef, radx2, arg, denom
-
+  integer, intent(in) :: p
+  
   ! zera ID
   do k=1,m
     do j=1,n
@@ -126,29 +127,29 @@ subroutine id_vector
       ID(idx) = 0.0
     end do
   end do
-
+    
   ! coeficiente geométrico (evita divisão por zero)
-  denom = a_xmax - xc
+  denom = a_xmax(p) - xc
   if (abs(denom) < 1.0e-12) denom = sign(1.0e-12, denom)
-  coef  = (b_ymax - yc) / denom
+  coef  = (b_ymax(p) - yc) / denom
 
   ! (a_xmax - xc)^2, usado no argumento da raiz
-  radx2 = (a_xmax - xc)**2
+  radx2 = (a_xmax(p) - xc)**2
 
   do k=1,m
     do j=1,n
       idx = j + (k-1)*n
 
-      if (x(j) .ge. a_xmin .and. x(j) .le. a_xmax) then
+      if (x(j) .ge. a_xmin(p) .and. x(j) .le. a_xmax(p)) then
         ! argumento da raiz: garante não-negatividade
         arg = radx2 - (x(j) - xc)**2
         if (arg < 0.0) arg = 0.0
 
         ! Quadrantes superiores: yc <= y <= b_ymax
-        if (y(k) .ge. yc .and. y(k) .le. b_ymax) then
+        if (y(k) .ge. yc .and. y(k) .le. b_ymax(p)) then
           if ( (y(k) - yc) .le. coef * sqrt(arg) ) ID(idx) = 1.0
         ! Quadrantes inferiores: b_ymin <= y <= yc
-        else if (y(k) .le. yc .and. y(k) .ge. b_ymin) then
+        else if (y(k) .le. yc .and. y(k) .ge. b_ymin(p)) then
           if ( (yc - y(k)) .le. coef * sqrt(arg) ) ID(idx) = 1.0
         end if
       end if
@@ -345,6 +346,13 @@ write(uout,*) 'Variables="SIMULATION","PHI","H","W","PARTICLE_RADIUS",'// &
 call flush(uout)
 
   do p=1,Nrea
+  
+  write(*,*)'#################################################'
+  write(*,*)'#        IDENTIFICANDO A REGIÃO TUMORAL         #'
+  write(*,*)'#################################################'
+  
+  call id_vector(p)
+  
     contagem(p)=0
     call imag
     write(*,'(A,1x)') 'PROGRESSO DA SIMULAÇÃO:',p

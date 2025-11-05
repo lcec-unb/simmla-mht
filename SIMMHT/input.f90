@@ -31,8 +31,6 @@ subroutine input
     READ (2,'(A)') texto
     READ (2,'(A)') texto
     READ (2,'(A)') texto
-    READ (2,505) texto,raio
-    READ (2,505) texto,eccent
     READ (2,505) texto,RHO1
     READ (2,505) texto,RHO2
     READ (2,505) texto,K1
